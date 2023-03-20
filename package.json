@@ -2,12 +2,14 @@
   "name": "cron-ts",
   "version": "0.1.0",
   "description": "Type-safe Toolkit to get cron expressions for JavaScript and TypeScript",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "start": "nodemon src/index.ts",
     "test": "jest",
     "test:coverage": "jest --coverage",
-    "build": "tsc"
+    "build": "tsc",
+    "publish": "npm publish --access public"
   },
   "keywords": [
     "cron",
@@ -15,6 +17,11 @@
     "cron-job",
     "cron job",
     "cron-ts"
+  ],
+  "files": [
+    "dist",
+    "license",
+    "readme.md"
   ],
   "author": "Omar Khairy",
   "license": "ISC",

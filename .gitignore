@@ -4,3 +4,6 @@ src/builder.ts
 
 # test coverage
 coverage
+
+# production build
+dist
