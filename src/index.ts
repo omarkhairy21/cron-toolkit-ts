@@ -18,4 +18,4 @@ export type {
 
 import Cron from "./cron";
 
-export default Cron;
+export default new Cron();

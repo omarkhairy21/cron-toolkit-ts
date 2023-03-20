@@ -10,13 +10,13 @@ describe("Cron Expressions", () => {
     it("gets every 5 minutes expressions", () => {
       expect(cron.everyFiveMinutes()).toEqual("*/5 * * * *");
       // alternative
-      expect(cron.everyMinutes(5)).toEqual("*/5 * * * *");
+      expect(cron.everyCustomMinute(5)).toEqual("*/5 * * * *");
     });
 
     it("gets every 10 minutes expressions", () => {
       expect(cron.everyTenMinutes()).toEqual("*/10 * * * *");
       // alternative
-      expect(cron.everyMinutes(10)).toEqual("*/10 * * * *");
+      expect(cron.everyCustomMinute(10)).toEqual("*/10 * * * *");
     });
 
     it("gets every 15 minutes expressions", () => {
@@ -32,9 +32,9 @@ describe("Cron Expressions", () => {
     });
 
     it("every custom minute", () => {
-      expect(cron.everyMinutes(3)).toEqual("*/3 * * * *");
-      expect(cron.everyMinutes(7)).toEqual("*/7 * * * *");
-      expect(cron.everyMinutes(11)).toEqual("*/11 * * * *");
+      expect(cron.everyCustomMinute(3)).toEqual("*/3 * * * *");
+      expect(cron.everyCustomMinute(7)).toEqual("*/7 * * * *");
+      expect(cron.everyCustomMinute(11)).toEqual("*/11 * * * *");
     });
 
     it("gets at minute expressions", () => {
@@ -75,9 +75,9 @@ describe("Cron Expressions", () => {
       expect(cron.fromDay("Monday").toDay("Friday")).toEqual("0 0 * * 1-5");
     });
 
-    it("gets every days form sunday to saturday at 4 PM", () => {
-      expect(cron.fromDay("Sunday").toDayAt("Saturday", 16)).toEqual(
-        "0 16 * * 0-6"
+    it("gets every weekend days at 09:00", () => {
+      expect(cron.fromDay("Saturday").toDayAt("Sunday", 9)).toEqual(
+        "0 9 * * 6-0"
       );
     });
 

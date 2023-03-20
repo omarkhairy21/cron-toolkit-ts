@@ -42,7 +42,7 @@ type CronExpression<T extends string> = T extends `${infer A} ${infer B} ${infer
 
 type CRON = {
     everyMinute: () => EveryMinutes<Minutes>;
-    everyMinutes: <T extends Minutes>(minute: T) => EveryMinutes<T>;
+    everyCustomMinute: <T extends Minutes>(minute: T) => EveryMinutes<T>;
     everyFiveMinutes: () => CronExpression<"*/5 * * * *">;
     every5Minutes: () => CronExpression<"*/5 * * * *">;
     everyTenMinutes: () => CronExpression<"*/10 * * * *">;
@@ -101,17 +101,17 @@ const WeekDaysMap: Map<DayName, WeekDays> = new Map<DayName, WeekDays>([
 
 class Cron implements CRON {
     everyMinute = () => "* * * * *" as CronExpression<"* * * * *">;
-    everyMinutes = <T extends Minutes>(minute: T) => `*/${minute} * * * *` as EveryMinutes<T>;
+    everyCustomMinute = <T extends Minutes>(minute: T) => `*/${minute} * * * *` as EveryMinutes<T>;
 
-    everyFiveMinutes = () => this.everyMinutes(5);
-    every5Minutes = () => this.everyMinutes(5); // alias
+    everyFiveMinutes = () => this.everyCustomMinute(5);
+    every5Minutes = () => this.everyCustomMinute(5); // alias
 
-    everyTenMinutes = () => this.everyMinutes(10);
-    every10Minutes = () => this.everyMinutes(10); // alias
+    everyTenMinutes = () => this.everyCustomMinute(10);
+    every10Minutes = () => this.everyCustomMinute(10); // alias
 
-    every15Minutes = () => this.everyMinutes(15);
-    every30Minutes = () => this.everyMinutes(30);
-    every45Minutes = () => this.everyMinutes(45);
+    every15Minutes = () => this.everyCustomMinute(15);
+    every30Minutes = () => this.everyCustomMinute(30);
+    every45Minutes = () => this.everyCustomMinute(45);
 
     everyHour = () => "0 * * * *" as CronExpression<"0 * * * *">;
     everyCustomHour = <T extends Hours>(hour: T) => `0 */${hour} * * *` as EveryHours<T>;
@@ -134,8 +134,6 @@ class Cron implements CRON {
     everyMonth = () => "0 0 1 * *" as EveryMonths<Months>;
 
     atMinute = <T extends Minutes>(minute: T) => `${minute} * * * *` as AtMinutes<T>;
-
-
     atHour = <T extends Hours>(hour: T) => `0 ${hour} * * *` as AtHours<T>;
     atDay = <T extends Days>(day: T) => `0 0 ${day} * *` as AtDays<T>;
     atMonth = <T extends Months>(month: T) => `0 0 1 ${month} *` as AtMonths<T>;
