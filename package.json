@@ -1,0 +1,29 @@
+{
+  "name": "cron-ts",
+  "version": "0.1.0",
+  "description": "Type-safe Toolkit to get cron expressions for JavaScript and TypeScript",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon src/index.ts",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "build": "tsc"
+  },
+  "keywords": [
+    "cron",
+    "cronjob",
+    "cron-job",
+    "cron job",
+    "cron-ts"
+  ],
+  "author": "Omar Khairy",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "^29.4.4",
+    "jest": "^29.5.0",
+    "nodemon": "^2.0.21",
+    "ts-jest": "^29.0.5",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.2"
+  }
+}
