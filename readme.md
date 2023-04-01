@@ -5,7 +5,7 @@ Generate a cron expression from a human readable function. with the type-safe wa
 ## Install
 
 ```bash
-npm install cron-ts
+npm i cron-toolkit-ts
 ```
 
 ## Usage
