@@ -1,6 +1,11 @@
-# Cron-Ts
-
+# Cron-Toolkit-Ts
 Generate a cron expression from a human readable function. with the type-safe way.
+
+## video from assets folder
+
+[![Cron-Toolkit-Ts](
+    
+
 
 ## Install
 
@@ -65,8 +70,3 @@ const weekDaysAt8pm = Cron.fromDay("Monday").toDayAt("Friday", 20); // 0 20 * * 
 const inWeekendAt9am = Cron.fromDay("Saturday").toDayAt("Saturday", 9); // 0 9 * * 6-0 every weekend at 09:00
 
 ```
-
-
-
-
-

@@ -1,5 +1,5 @@
 import Cron from "./cron";
-describe("Cron Expressions", () => {
+describe("Standard Cron Expressions", () => {
   let cron = new Cron();
 
   describe("Minutes", () => {
@@ -110,5 +110,41 @@ describe("Cron Expressions", () => {
     it("gets at night time = 09:00 PM", () => {
       expect(cron.atNight()).toEqual("0 21 * * *");
     });
+  });
+});
+
+describe("Non Standard Cron Expressions", () => {
+    const cron = new Cron();
+  describe("Seconds", () => {
+    it("gets every second expressions", () => {
+      expect(cron.useNonStandard().everySecond()).toEqual("* * * * * *");
+    });
+
+    it("gets every 5 seconds expressions", () => {
+      expect(cron.useNonStandard().everyCustomSecond(5)).toEqual("*/5 * * * * *");
+    });
+
+    it("gets every 10 seconds expressions", () => {
+      expect(cron.useNonStandard().everyCustomSecond(10)).toEqual("*/10 * * * * *");
+    });
+
+    it("gets every 15 seconds expressions", () => {
+      expect(cron.useNonStandard().everyCustomSecond(15)).toEqual("*/15 * * * * *");
+    });
+
+    it("gets every 30 seconds expressions", () => {
+      expect(cron.useNonStandard().everyCustomSecond(30)).toEqual("*/30 * * * * *");
+    });
+
+    it("gets every 45 seconds expressions", () => {
+      expect(cron.useNonStandard().everyCustomSecond(45)).toEqual("*/45 * * * * *");
+    });
+
+    it("every custom second", () => {
+      expect(cron.useNonStandard().everyCustomSecond(3)).toEqual("*/3 * * * * *");
+      expect(cron.useNonStandard().everyCustomSecond(7)).toEqual("*/7 * * * * *");
+      expect(cron.useNonStandard().everyCustomSecond(11)).toEqual("*/11 * * * * *");
+    });
+
   });
 });

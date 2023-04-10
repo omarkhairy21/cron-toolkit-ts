@@ -1,6 +1,8 @@
 node_modules
 .vscode
+
 src/builder.ts
+src/examples.ts
 
 # test coverage
 coverage
