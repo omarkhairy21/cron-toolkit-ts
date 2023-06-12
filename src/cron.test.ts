@@ -43,6 +43,10 @@ describe("Standard Cron Expressions", () => {
       expect(cron.atMinute(30)).toEqual("30 * * * *");
       expect(cron.atMinute(45)).toEqual("45 * * * *");
     });
+
+    it("gets between minutes expressions", () => {
+      expect(cron.betweenMinutes(0, 59)).toEqual("0-59 * * * *");
+    })
   });
 
   describe("Hours", () => {
@@ -60,6 +64,10 @@ describe("Standard Cron Expressions", () => {
     // alternative
     expect(cron.everyCustomHour(3)).toEqual("0 */3 * * *");
     expect(cron.everyCustomHour(4)).toEqual("0 */4 * * *");
+
+    it("gets between hours expressions", () => {
+      expect(cron.betweenHours(0, 23)).toEqual("0 0-23 * * *");
+    })
   });
 
   describe("Days", () => {
@@ -84,7 +92,25 @@ describe("Standard Cron Expressions", () => {
     it("gets every week day expressions at 00:00", () => {
       expect(cron.everyWeekDay()).toEqual("0 0 * * 1-5");
     });
+
+    it("gets at day expressions", () => {
+      expect(cron.atDay(1)).toEqual("0 0 1 * *");
+    })
+
+    it("gets between days expressions", () => {
+      expect(cron.betweenDays(0, 31)).toEqual("0 0 0-31 * *");
+    })
   });
+
+  describe('Month', () => {
+    it('gets at month expressions', () => {
+      expect(cron.atMonth(0)).toEqual("0 0 1 0 *");
+     })
+
+     it('gets between months expressions', () => {
+      expect(cron.betweenMonths(0, 11)).toEqual("0 0 1 0-11 *");
+     })
+   })
 
   describe("Through The Day", () => {
     it("gets 12:00 AM", () => {
