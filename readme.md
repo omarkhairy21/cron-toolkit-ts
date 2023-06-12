@@ -66,3 +66,13 @@ const atStartOfTheDay = Cron.atStartOfTheDay(); // 0 0 * * * every day at 00:00
 ```ts
 const everyMonth = Cron.everyMonth(); // 0 0 1 * * every month at 1st day at 00:00
 ```
+
+## Non-standard cron expressions
+
+### Seconds
+
+```typescript
+const every5Seconds = cron.useNonStandard().everyCustomSecond(5);
+const every10Seconds = cron.useNonStandard().every15Seconds();
+const every45Seconds = cron.useNonStandard().every45Seconds();
+```
