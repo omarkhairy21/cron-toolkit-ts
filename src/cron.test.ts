@@ -114,6 +114,10 @@ describe("Standard Cron Expressions", () => {
      it('gets between months expressions', () => {
       expect(cron.betweenMonths(0, 11)).toEqual("0 0 1 0-11 *");
      })
+
+     it('gets every month at expressions', () => {
+      expect(cron.everyMonthAt(1, 12, 0)).toEqual("0 12 1 * *");
+     })
    })
 
   describe("Through The Day", () => {
