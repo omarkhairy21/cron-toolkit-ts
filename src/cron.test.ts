@@ -79,6 +79,10 @@ describe("Standard Cron Expressions", () => {
       expect(cron.everyDayAt(12)).toEqual("0 12 * * *");
     });
 
+    it("gets every day at 12:05", () => {
+      expect(cron.everyDayAtHourAndMinute(12, 5)).toEqual("5 12 * * *");
+    });
+
     it("gets every days form monday to friday at 00:00", () => {
       expect(cron.fromDay("Monday").toDay("Friday")).toEqual("0 0 * * 1-5");
     });

@@ -14,6 +14,7 @@ type EveryHour<T extends Hours> = T extends 0 ? "0 * * * *" : `0 */${T} * * *`;
 
 type EveryDay<T extends Days> = T extends 0 ? "0 0 * * *" : `0 0 ${T} * *`;
 type EveryDayAt<T extends Hours> = T extends 0 ? "0 0 * * *" : `0 ${T} * * *`;
+type EveryDayAtHourAndMinute<T extends Hours, U extends Minutes> = T extends 0 ? `${U} 0 * * *` : `${U} ${T} * * *`;
 type EveryDayToDay<T extends DayName, U extends DayName> = `0 0 * * ${DayNameToNumber<T >}-${DayNameToNumber<U>}`;
 type EveryDayFromDay<T extends DayName> = `0 0 * * ${DayNameToNumber<T >}-6`;
 type EveryDayToDayAt<T extends DayName, U extends DayName, V extends Hours> = `0 ${V} * * ${DayNameToNumber<T >}-${DayNameToNumber<U>}`;
@@ -70,7 +71,7 @@ type CRON = {
 
     everyDay: () => EveryDay<Days>;
     everyDayAt: <T extends Hours>(hour: T) => EveryDay<T>;
-    
+
     fromDay: <T extends DayName>(from: T) => {
         toDay: <U extends DayName>(to: U) => EveryDayToDay<T, U>;
         toDayAt: <U extends DayName, V extends Hours>(to: U, hour: V) => EveryDayToDayAt<T, U, V>;
@@ -134,7 +135,8 @@ class Cron implements CRON {
 
     everyDay = () => "0 0 * * *" as EveryDay<Days>;
     everyDayAt = <T extends Hours>(hour: T) => `0 ${hour} * * *` as EveryDay<T>;
-    
+    everyDayAtHourAndMinute = <T extends Hours, U extends Minutes>(hour: T, minute: U) => `${minute} ${hour} * * *` as EveryDayAtHourAndMinute<T, U>;
+
     fromDay<T extends DayName>(from: T) {
         return {
             toDay: <U extends DayName>(to: U) => `0 0 * * ${WeekDaysMap.get(from)}-${WeekDaysMap.get(to)}` as EveryDayToDay<T, U>,
@@ -176,7 +178,7 @@ class Cron implements CRON {
 
     useNonStandard() {
         const everyCustomSecond = <T extends Seconds>(second: T) => `*/${second} * * * * *` as EverySecond<T>;
-        
+
         return {
             everySecond: () => "* * * * * *" as NonStandardCronExpression<"* * * * * *">,
             every5Seconds:  () => everyCustomSecond(5),
