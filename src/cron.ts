@@ -21,7 +21,7 @@ type EveryDayToDayAt<T extends DayName, U extends DayName, V extends Hours> = `0
 type EveryDayFromDayAt<T extends DayName, U extends Hours> = `0 ${U} * * ${DayNameToNumber<T >}-6`;
 
 type EveryMonths<T extends Months> = T extends 0 ? "0 0 1 * *" : `0 0 1 ${T} *`;
-type EveryMonthAt<T extends Days, U extends Hours, V extends Minutes> = `${V} ${U} ${T} * *`;
+type EveryMonthOn<T extends Days> = `0 0 ${T} * *`;
 type EveryWeekDays<T extends WeekDays> = T extends 0 ? "0 0 * * 0" : `0 0 * * ${T}`;
 
 type AtMinutes<T extends Minutes> = T extends 0 ? "0 * * * *" : `${T} * * * *`;
@@ -85,8 +85,17 @@ type CRON = {
     };
 
     everyWeekDay: () => StandardCronExpression<"0 0 * * 1-5">;
-    everyMonth: () => EveryMonths<Months>;
-    everyMonthAt: <T extends Days, U extends Hours, V extends Minutes>(day: T, hour: U, minute: V) => `${V} ${U} ${T} * *`;
+
+    everyMonth: () => {
+        get: () => EveryMonths<0>;
+        onDay: <T extends Days>(day: T) => {
+            get: () =>  EveryMonthOn<T>,
+            atHour: <U extends Hours>(hour: U) => {
+                get: () =>  EveryDayAt<U>,
+                atMinute: <V extends Minutes>(min: V) => EveryDayAtHourAndMinute<U, V>
+            }
+        }
+    }
 
     atMinute: <T extends Minutes>(minute: T) => AtMinutes<T>;
     atHour: <T extends Hours>(hour: T) => AtHours<T>;
@@ -164,8 +173,24 @@ class Cron implements CRON {
     }
 
     everyWeekDay = () => this.fromDay("Monday").toDayAt("Friday", 0);
-    everyMonth = () => "0 0 1 * *" as EveryMonths<Months>;
-    everyMonthAt = <T extends Days, U extends Hours, V extends Minutes>(day: T, hour: U, minute: V) => `${minute} ${hour} ${day} * *` as EveryMonthAt<T, U, V>
+    // everyMonth = () => "0 0 1 * *" as EveryMonths<Months>;
+    everyMonth = () => {
+        return {
+            /** At 00:00 on day 1 of month */
+            get: () => "0 0 1 * *" as EveryMonths<0>,
+            onDay: <T extends Days>(day: T) => {
+                return {
+                    get: () => `0 0 ${day} * *` as EveryMonthOn<T>,
+                    atHour: <U extends Hours>(hour: U) => {
+                        return {
+                            get: () => `0 ${hour} ${day} * *` as EveryDayAt<U>,
+                            atMinute: <V extends Minutes>(min: V) => `${min} ${hour} ${day} * *` as EveryDayAtHourAndMinute<U, V>
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     atMinute = <T extends Minutes>(minute: T) => `${minute} * * * *` as AtMinutes<T>;
     atHour = <T extends Hours>(hour: T) => `0 ${hour} * * *` as AtHours<T>;

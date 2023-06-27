@@ -119,8 +119,20 @@ describe("Standard Cron Expressions", () => {
       expect(cron.betweenMonths(0, 11)).toEqual("0 0 1 0-11 *");
      })
 
-     it('gets every month at expressions', () => {
-      expect(cron.everyMonthAt(1, 12, 0)).toEqual("0 12 1 * *");
+     it('gets every month expressions', () => {
+      expect(cron.everyMonth().get()).toEqual("0 0 1 * *");
+     })
+
+     it('gets every month on day expressions', () => {
+      expect(cron.everyMonth().onDay(12).get()).toEqual("0 0 12 * *");
+     })
+
+     it('gets every month on day at hour expressions', () => {
+      expect(cron.everyMonth().onDay(1).atHour(1).get()).toEqual("0 1 1 * *");
+     })
+
+     it('gets every month on day at hour at minute expressions', () => {
+      expect(cron.everyMonth().onDay(1).atHour(1).atMinute(1)).toEqual("1 1 1 * *");
      })
    })
 
