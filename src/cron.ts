@@ -70,8 +70,14 @@ type CRON = {
     every6Hours: () => StandardCronExpression<"0 */6 * * *">;
     every12Hours: () => StandardCronExpression<"0 */12 * * *">;
 
-    everyDay: () => EveryDay<Days>;
-    everyDayAt: <T extends Hours>(hour: T) => EveryDay<T>;
+    everyDay: () => {
+        get: () => EveryDay<0>;
+        atHour: <T extends Hours>(hour: T) => {
+            get: () => EveryDayAt<T>;
+            atMinute: <U extends Minutes>(minute: U) => EveryDayAtHourAndMinute<T, U>
+        }
+    }
+    everyDayAt: <T extends Hours>(hour: T) => EveryDayAt<T>;
 
     fromDay: <T extends DayName>(from: T) => {
         toDay: <U extends DayName>(to: U) => EveryDayToDay<T, U>;
@@ -135,9 +141,20 @@ class Cron implements CRON {
     every6Hours = () => this.everyCustomHour(6);
     every12Hours = () => this.everyCustomHour(12);
 
-    everyDay = () => "0 0 * * *" as EveryDay<Days>;
-    everyDayAt = <T extends Hours>(hour: T) => `0 ${hour} * * *` as EveryDay<T>;
-    everyDayAtHourAndMinute = <T extends Hours, U extends Minutes>(hour: T, minute: U) => `${minute} ${hour} * * *` as EveryDayAtHourAndMinute<T, U>;
+    everyDay = () => {
+        return {
+            /** Everyday at 00:00 */
+            get: () => "0 0 * * *" as EveryDay<0>,
+            atHour: <T extends Hours>(hour: T) => {
+                return {
+                    get: () => this.everyDayAt(hour),
+                    atMinute: <U extends Minutes>(min: U) => `${min} ${hour} * * *` as EveryDayAtHourAndMinute<T, U>
+                }
+            }
+        }
+    }
+
+    everyDayAt = <T extends Hours>(hour: T) => `0 ${hour} * * *` as EveryDayAt<T>;
 
     fromDay<T extends DayName>(from: T) {
         return {
