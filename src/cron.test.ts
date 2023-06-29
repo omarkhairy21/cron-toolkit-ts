@@ -72,7 +72,15 @@ describe("Standard Cron Expressions", () => {
 
   describe("Days", () => {
     it("gets every day expressions at 00:00", () => {
-      expect(cron.everyDay()).toEqual("0 0 * * *");
+      expect(cron.everyDay().get()).toEqual("0 0 * * *");
+    });
+
+    it("gets every day expressions at hour", () => {
+      expect(cron.everyDay().atHour(1).get()).toEqual("0 1 * * *");
+    });
+
+    it("gets every day expressions at hour and minute", () => {
+      expect(cron.everyDay().atHour(1).atMinute(1)).toEqual("1 1 * * *");
     });
 
     it("gets every day at 12:00", () => {
@@ -104,11 +112,27 @@ describe("Standard Cron Expressions", () => {
 
   describe('Month', () => {
     it('gets at month expressions', () => {
-      expect(cron.atMonth(0)).toEqual("0 0 1 0 *");
+      expect(cron.atMonth(1)).toEqual("0 0 1 1 *");
      })
 
      it('gets between months expressions', () => {
-      expect(cron.betweenMonths(0, 11)).toEqual("0 0 1 0-11 *");
+      expect(cron.betweenMonths(1, 11)).toEqual("0 0 1 1-11 *");
+     })
+
+     it('gets every month expressions', () => {
+      expect(cron.everyMonth().get()).toEqual("0 0 1 * *");
+     })
+
+     it('gets every month on day expressions', () => {
+      expect(cron.everyMonth().onDay(12).get()).toEqual("0 0 12 * *");
+     })
+
+     it('gets every month on day at hour expressions', () => {
+      expect(cron.everyMonth().onDay(1).atHour(1).get()).toEqual("0 1 1 * *");
+     })
+
+     it('gets every month on day at hour at minute expressions', () => {
+      expect(cron.everyMonth().onDay(1).atHour(1).atMinute(1)).toEqual("1 1 1 * *");
      })
    })
 

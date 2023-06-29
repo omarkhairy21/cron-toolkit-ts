@@ -2,7 +2,7 @@ type Seconds = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 
 type Minutes = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 31 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40 | 41 | 42 | 43 | 44 | 45 | 46 | 47 | 48 | 49 | 50 | 51 | 52 | 53 | 54 | 55 | 56 | 57 | 58 | 59;
 type Hours = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23;
 type Days = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 31;
-type Months = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
+type Months = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
 type WeekDays = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
 type DayName = "Sunday" | "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday";
@@ -14,12 +14,14 @@ type EveryHour<T extends Hours> = T extends 0 ? "0 * * * *" : `0 */${T} * * *`;
 
 type EveryDay<T extends Days> = T extends 0 ? "0 0 * * *" : `0 0 ${T} * *`;
 type EveryDayAt<T extends Hours> = T extends 0 ? "0 0 * * *" : `0 ${T} * * *`;
+type EveryDayAtHourAndMinute<T extends Hours, U extends Minutes> = T extends 0 ? `${U} 0 * * *` : `${U} ${T} * * *`;
 type EveryDayToDay<T extends DayName, U extends DayName> = `0 0 * * ${DayNameToNumber<T >}-${DayNameToNumber<U>}`;
 type EveryDayFromDay<T extends DayName> = `0 0 * * ${DayNameToNumber<T >}-6`;
 type EveryDayToDayAt<T extends DayName, U extends DayName, V extends Hours> = `0 ${V} * * ${DayNameToNumber<T >}-${DayNameToNumber<U>}`;
 type EveryDayFromDayAt<T extends DayName, U extends Hours> = `0 ${U} * * ${DayNameToNumber<T >}-6`;
 
 type EveryMonths<T extends Months> = T extends 0 ? "0 0 1 * *" : `0 0 1 ${T} *`;
+type EveryMonthOn<T extends Days> = `0 0 ${T} * *`;
 type EveryWeekDays<T extends WeekDays> = T extends 0 ? "0 0 * * 0" : `0 0 * * ${T}`;
 
 type AtMinutes<T extends Minutes> = T extends 0 ? "0 * * * *" : `${T} * * * *`;
@@ -68,16 +70,32 @@ type CRON = {
     every6Hours: () => StandardCronExpression<"0 */6 * * *">;
     every12Hours: () => StandardCronExpression<"0 */12 * * *">;
 
-    everyDay: () => EveryDay<Days>;
-    everyDayAt: <T extends Hours>(hour: T) => EveryDay<T>;
-    
+    everyDay: () => {
+        get: () => EveryDay<0>;
+        atHour: <T extends Hours>(hour: T) => {
+            get: () => EveryDayAt<T>;
+            atMinute: <U extends Minutes>(minute: U) => EveryDayAtHourAndMinute<T, U>
+        }
+    }
+    everyDayAt: <T extends Hours>(hour: T) => EveryDayAt<T>;
+
     fromDay: <T extends DayName>(from: T) => {
         toDay: <U extends DayName>(to: U) => EveryDayToDay<T, U>;
         toDayAt: <U extends DayName, V extends Hours>(to: U, hour: V) => EveryDayToDayAt<T, U, V>;
     };
 
     everyWeekDay: () => StandardCronExpression<"0 0 * * 1-5">;
-    everyMonth: () => EveryMonths<Months>;
+
+    everyMonth: () => {
+        get: () => EveryMonths<1>;
+        onDay: <T extends Days>(day: T) => {
+            get: () =>  EveryMonthOn<T>,
+            atHour: <U extends Hours>(hour: U) => {
+                get: () =>  EveryDayAt<U>,
+                atMinute: <V extends Minutes>(min: V) => EveryDayAtHourAndMinute<U, V>
+            }
+        }
+    }
 
     atMinute: <T extends Minutes>(minute: T) => AtMinutes<T>;
     atHour: <T extends Hours>(hour: T) => AtHours<T>;
@@ -132,9 +150,21 @@ class Cron implements CRON {
     every6Hours = () => this.everyCustomHour(6);
     every12Hours = () => this.everyCustomHour(12);
 
-    everyDay = () => "0 0 * * *" as EveryDay<Days>;
-    everyDayAt = <T extends Hours>(hour: T) => `0 ${hour} * * *` as EveryDay<T>;
-    
+    everyDay = () => {
+        return {
+            /** Everyday at 00:00 */
+            get: () => "0 0 * * *" as EveryDay<0>,
+            atHour: <T extends Hours>(hour: T) => {
+                return {
+                    get: () => this.everyDayAt(hour),
+                    atMinute: <U extends Minutes>(min: U) => `${min} ${hour} * * *` as EveryDayAtHourAndMinute<T, U>
+                }
+            }
+        }
+    }
+
+    everyDayAt = <T extends Hours>(hour: T) => `0 ${hour} * * *` as EveryDayAt<T>;
+
     fromDay<T extends DayName>(from: T) {
         return {
             toDay: <U extends DayName>(to: U) => `0 0 * * ${WeekDaysMap.get(from)}-${WeekDaysMap.get(to)}` as EveryDayToDay<T, U>,
@@ -143,7 +173,24 @@ class Cron implements CRON {
     }
 
     everyWeekDay = () => this.fromDay("Monday").toDayAt("Friday", 0);
-    everyMonth = () => "0 0 1 * *" as EveryMonths<Months>;
+    // everyMonth = () => "0 0 1 * *" as EveryMonths<Months>;
+    everyMonth = () => {
+        return {
+            /** At 00:00 on day 1 of month */
+            get: () => "0 0 1 * *" as EveryMonths<1>,
+            onDay: <T extends Days>(day: T) => {
+                return {
+                    get: () => `0 0 ${day} * *` as EveryMonthOn<T>,
+                    atHour: <U extends Hours>(hour: U) => {
+                        return {
+                            get: () => `0 ${hour} ${day} * *` as EveryDayAt<U>,
+                            atMinute: <V extends Minutes>(min: V) => `${min} ${hour} ${day} * *` as EveryDayAtHourAndMinute<U, V>
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     atMinute = <T extends Minutes>(minute: T) => `${minute} * * * *` as AtMinutes<T>;
     atHour = <T extends Hours>(hour: T) => `0 ${hour} * * *` as AtHours<T>;
@@ -176,7 +223,7 @@ class Cron implements CRON {
 
     useNonStandard() {
         const everyCustomSecond = <T extends Seconds>(second: T) => `*/${second} * * * * *` as EverySecond<T>;
-        
+
         return {
             everySecond: () => "* * * * * *" as NonStandardCronExpression<"* * * * * *">,
             every5Seconds:  () => everyCustomSecond(5),
