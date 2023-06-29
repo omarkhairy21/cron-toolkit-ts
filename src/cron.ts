@@ -2,7 +2,7 @@ type Seconds = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 
 type Minutes = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 31 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40 | 41 | 42 | 43 | 44 | 45 | 46 | 47 | 48 | 49 | 50 | 51 | 52 | 53 | 54 | 55 | 56 | 57 | 58 | 59;
 type Hours = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23;
 type Days = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 31;
-type Months = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
+type Months = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
 type WeekDays = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
 type DayName = "Sunday" | "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday";
@@ -87,7 +87,7 @@ type CRON = {
     everyWeekDay: () => StandardCronExpression<"0 0 * * 1-5">;
 
     everyMonth: () => {
-        get: () => EveryMonths<0>;
+        get: () => EveryMonths<1>;
         onDay: <T extends Days>(day: T) => {
             get: () =>  EveryMonthOn<T>,
             atHour: <U extends Hours>(hour: U) => {
@@ -177,7 +177,7 @@ class Cron implements CRON {
     everyMonth = () => {
         return {
             /** At 00:00 on day 1 of month */
-            get: () => "0 0 1 * *" as EveryMonths<0>,
+            get: () => "0 0 1 * *" as EveryMonths<1>,
             onDay: <T extends Days>(day: T) => {
                 return {
                     get: () => `0 0 ${day} * *` as EveryMonthOn<T>,

@@ -112,11 +112,11 @@ describe("Standard Cron Expressions", () => {
 
   describe('Month', () => {
     it('gets at month expressions', () => {
-      expect(cron.atMonth(0)).toEqual("0 0 1 0 *");
+      expect(cron.atMonth(1)).toEqual("0 0 1 1 *");
      })
 
      it('gets between months expressions', () => {
-      expect(cron.betweenMonths(0, 11)).toEqual("0 0 1 0-11 *");
+      expect(cron.betweenMonths(1, 11)).toEqual("0 0 1 1-11 *");
      })
 
      it('gets every month expressions', () => {
