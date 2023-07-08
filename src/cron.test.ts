@@ -75,19 +75,19 @@ describe("Standard Cron Expressions", () => {
       expect(cron.everyDay().get()).toEqual("0 0 * * *");
     });
 
-    it("gets every day expressions at hour", () => {
+    it("gets every day at hour and minute 0 expressions", () => {
       expect(cron.everyDay().atHour(1).get()).toEqual("0 1 * * *");
     });
 
-    it("gets every day expressions at hour and minute", () => {
+    it("gets every day at hour and minute expressions", () => {
       expect(cron.everyDay().atHour(1).atMinute(1)).toEqual("1 1 * * *");
     });
 
-    it("gets every day at 12:00", () => {
+    it("gets every day at 12:00 expression", () => {
       expect(cron.everyDayAt(12)).toEqual("0 12 * * *");
     });
 
-    it("gets every days form monday to friday at 00:00", () => {
+    it("gets every days from monday to friday at 00:00", () => {
       expect(cron.fromDay("Monday").toDay("Friday")).toEqual("0 0 * * 1-5");
     });
 
