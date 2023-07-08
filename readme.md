@@ -69,8 +69,10 @@ const atStartOfTheDay = Cron.atStartOfTheDay(); // 0 0 * * * every day at 00:00
 const everyMonth = Cron.everyMonth().get(); // 0 0 1 * * every month at 1st day at 00:00
 const everyJanuary = Cron.atMonth(1) // 0 0 1 1 * every January 1, at 00:00
 const everyJanuaryTwelfth = Cron.everyMonth().onDay(12).get() // 0 0 12 * * every January 12 at 00:00
-const everyJanuaryTwelfthAt1am = Cron.everyMonth().onDay(12).atHour(1).get() // 0 1 12 * * every January 12 at 01:00
-const everyJanuaryTwelfthAt0130Hours = Cron.everyMonth().onDay(12).atHour(1).get().atMinute(30) // 30 1 12 * * every January 12 at 01:30
+const everyJanuaryTwelfthAt1am = Cron.everyMonth().onDay(12)
+                                  .atHour(1).get() // 0 1 12 * * every January 12 at 01:00
+const everyJanuaryTwelfthAt0130Hours = Cron.everyMonth().onDay(12)
+                                  .atHour(1).atMinute(30) // 30 1 12 * * every January 12 at 01:30
 ```
 
 ## Non-standard cron expressions
