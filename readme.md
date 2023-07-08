@@ -15,7 +15,7 @@ npm i cron-toolkit-ts
 import { Cron } from 'cron-ts';
 
 const everyMinute = Cron.everyMinute(); // 0 * * * * *
- 
+
 const every5Minutes = Cron.everyMinutes(5); // */5 * * * *
 
 const every10Minutes = Cron.everyMinutes(10); // */10 * * * *
@@ -44,8 +44,10 @@ const everyCustomHour = Cron.everyCustomHour(14); // 0 */14 * * * every 14 hours
 
 ### Days
 ```ts
-const everyDay = Cron.everyDay(); // 0 0 * * * every day at 00:00
+const everyDay = cron.everyDay().get(); // 0 0 * * * every day at 00:00
 const everyDayAt12pm = Cron.everyDayAt(12) // 0 12 * * * every day at 12:00
+const everyDayAt12pm = Cron.everyDay().atHour(12).get() // 0 12 * * * every day at 12:00
+const everyDayAt1230Hours = Cron.everyDay().atHour(12).atMinute(30) // 30 12 * * * every day at 12:30
 const everyDayAt12am = Cron.everyDayAt(0) // 0 0 * * * every day at 00:00
 const weekDaysAt8pm = Cron.fromDay("Monday").toDayAt("Friday", 20); // 0 20 * * 1-5 every week days at 20:00
 const inWeekendAt9am = Cron.fromDay("Saturday").toDayAt("Saturday", 9); // 0 9 * * 6-0 every weekend at 09:00
@@ -64,7 +66,11 @@ const atStartOfTheDay = Cron.atStartOfTheDay(); // 0 0 * * * every day at 00:00
 
 ### Months
 ```ts
-const everyMonth = Cron.everyMonth(); // 0 0 1 * * every month at 1st day at 00:00
+const everyMonth = Cron.everyMonth().get(); // 0 0 1 * * every month at 1st day at 00:00
+const everyJanuary = Cron.atMonth(1) // 0 0 1 1 * every January 1, at 00:00
+const everyJanuaryTwelfth = Cron.everyMonth().onDay(12).get() // 0 0 12 * * every January 12 at 00:00
+const everyJanuaryTwelfthAt1am = Cron.everyMonth().onDay(12).atHour(1).get() // 0 1 12 * * every January 12 at 01:00
+const everyJanuaryTwelfthAt0130Hours = Cron.everyMonth().onDay(12).atHour(1).get().atMinute(30) // 30 1 12 * * every January 12 at 01:30
 ```
 
 ## Non-standard cron expressions
