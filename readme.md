@@ -12,7 +12,7 @@ npm i cron-toolkit-ts
 
 ### Minutes
 ```ts
-import { Cron } from 'cron-ts';
+import Cron from 'cron-toolkit-ts';
 
 const everyMinute = Cron.everyMinute(); // 0 * * * * *
 
